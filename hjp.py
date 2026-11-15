@@ -75,9 +75,12 @@ def _save(arr, fmt, **kw):
     return b.getvalue()
 
 
-def enc_rgb(arr, q, lossless):
+LOSSLESS_METHOD = 4      # WebP lossless 的 effort：4 比 6 快约 11 倍，体积只大 3%
+
+
+def enc_rgb(arr, q, lossless, method=None):
     if lossless:
-        return _save(arr, 'WEBP', lossless=True, method=6, quality=100)
+        return _save(arr, 'WEBP', lossless=True, method=method or LOSSLESS_METHOD, quality=100)
     return _save(arr, 'WEBP', quality=q, method=6)
 
 

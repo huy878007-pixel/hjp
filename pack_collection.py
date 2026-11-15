@@ -25,6 +25,7 @@ import numpy as np
 from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import hjp as _hjp
 from hjp import (write_hjp, allocate_ids, source_id, HjpBuildError,
                  C_PNG, C_WEBP, L_COLOR, L_NORMAL, L_DEPTH, L_MASK, L_ALPHA,
                  _save, enc_rgb, enc_la)
@@ -85,13 +86,13 @@ def plan(cdir, exprs):
     return plan_out, warnings
 
 
-def build_character(cdir, out_dir, lossless=False, q=90):
+def build_character(cdir, out_dir, lossless=False, q=90, ids=None, verbose=True):
     idx, exprs = read_index(cdir)
     vid = idx['id']
     plan_out, warnings = plan(cdir, exprs)
     canvas = (max(p['size'][0] for p in plan_out), max(p['size'][1] for p in plan_out))
 
-    idmap = dict(allocate_ids(vid, [e['name'] for e in exprs]))
+    idmap = ids if ids is not None else dict(allocate_ids(vid, [e['name'] for e in exprs]))
     blocks_b, blocks_m, pari, metas = [], [], [], []
     for p in plan_out:
         e = p['expr']; eid = idmap[e['name']]
@@ -170,16 +171,29 @@ def build_character(cdir, out_dir, lossless=False, q=90):
     sb = write_hjp(pb, mb, blocks_b, pari)
     sm = write_hjp(pm, mm, blocks_m, pari)
     flag = '  [尺寸不一致]' if warnings else ''
-    print(f"  {vid:16s} n={len(exprs)}  canvas_max={canvas[0]}x{canvas[1]}"
-          f"  base={sb/1048576:6.2f}MiB  material={sm/1048576:7.2f}MiB{flag}", flush=True)
+    if verbose:
+        print(f"  {vid:16s} n={len(exprs)}  canvas_max={canvas[0]}x{canvas[1]}"
+              f"  base={sb/1048576:6.2f}MiB  material={sm/1048576:7.2f}MiB{flag}", flush=True)
     return dict(sprite=vid, name=idx.get('name'), n=len(exprs), base=sb, material=sm,
-                canvas=list(canvas), warnings=warnings)
+                canvas=list(canvas), warnings=warnings, summary=flag)
+
+
+def _worker(args):
+    cdir, out, lossless, ids, method = args
+    _hjp.LOSSLESS_METHOD = method
+    try:
+        return build_character(cdir, out, lossless, ids=ids, verbose=False), None
+    except Exception as e:                      # noqa: BLE001
+        return None, f"{os.path.basename(cdir)}: {type(e).__name__}: {e}"
 
 
 def main():
     argv = sys.argv[1:]
     lossless = '--lossless' in argv
     limit = int(argv[argv.index('--limit') + 1]) if '--limit' in argv else None
+    jobs = int(argv[argv.index('--jobs') + 1]) if '--jobs' in argv else 1
+    method = int(argv[argv.index('--webp-method') + 1]) if '--webp-method' in argv else _hjp.LOSSLESS_METHOD
+    _hjp.LOSSLESS_METHOD = method
     src = argv[argv.index('--src') + 1] if '--src' in argv else SRC
     if '--out' in argv:
         out = argv[argv.index('--out') + 1]
@@ -190,19 +204,45 @@ def main():
                    if os.path.isdir(os.path.join(src, d)) and not d.startswith('_'))
     if limit:
         chars = chars[:limit]
-    print(f"源 {src}\n输出 {out}\n角色 {len(chars)} 个，profile={'lossless' if lossless else 'compact'}\n")
-    rows = []
-    for c in chars:
-        try:
-            rows.append(build_character(os.path.join(src, c), out, lossless=lossless))
-        except HjpBuildError as e:
-            print(f"  SKIP {c}: {e}", flush=True)
+    print(f"源 {src}\n输出 {out}\n角色 {len(chars)} 个，profile={'lossless' if lossless else 'compact'}"
+          f"，并行 {jobs}\n", flush=True)
+    rows, skips = [], []
+
+    if jobs > 1:
+        pre = {}
+        for c in chars:
+            idx, exprs = read_index(os.path.join(src, c))
+            pre[c] = dict(allocate_ids(idx['id'], [e['name'] for e in exprs]))
+        from multiprocessing import Pool
+        tasks = [(os.path.join(src, c), out, lossless, pre[c], method) for c in chars]
+        done = 0
+        with Pool(jobs) as pool:
+            for row, err in pool.imap_unordered(_worker, tasks):
+                done += 1
+                if err:
+                    skips.append(err)
+                    print(f"  SKIP {err}", flush=True)
+                else:
+                    rows.append(row)
+                    print(f"  [{done}/{len(chars)}] {row['sprite']:16s} n={row['n']} "
+                          f"base={row['base']/1048576:5.2f} material={row['material']/1048576:6.2f} MiB"
+                          f"{row['summary']}", flush=True)
+    else:
+        for c in chars:
+            try:
+                row = build_character(os.path.join(src, c), out, lossless=lossless)
+                rows.append(row)
+            except HjpBuildError as e:
+                skips.append(f"{c}: {e}")
+                print(f"  SKIP {c}: {e}", flush=True)
+
     tb = sum(r['base'] for r in rows); tm = sum(r['material'] for r in rows)
     print(f"\nTOTAL base={tb/1048576:.2f}MiB material={tm/1048576:.2f}MiB "
-          f"sum={(tb+tm)/1048576:.2f}MiB ({len(rows)} 角色)")
+          f"sum={(tb+tm)/1048576:.2f}MiB ({len(rows)} 角色, 跳过 {len(skips)})")
     os.makedirs(out, exist_ok=True)
     json.dump({'profile': 'lossless' if lossless else 'compact', 'source': src,
-               'characters': rows, 'total': {'base': tb, 'material': tm}},
+               'characters': rows, 'skips': skips,
+               'total': {'base': tb, 'material': tm}},
               open(os.path.join(out, '_build.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     reg = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'expr_ids.json')
     if os.path.exists(reg):

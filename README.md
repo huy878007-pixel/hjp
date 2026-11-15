@@ -71,6 +71,12 @@ skin = b.image(0, L_MASK, 0)[0][..., 0]  # 第 0 类材质
 - 尺寸：每个块可自带尺寸（`dimn` 扩展块），蒙版与颜色分辨率不同也能精确对齐。
 - 失败一律回退到原版显示，不白屏。
 
+## 后续可做
+
+- **Rust 容器库 + CLI**（`hjp-rs`）：只做读索引、取块、校验、`dump`，用 `conformance/golden.hjp` 与 Python 实现互校。**不重写编码器**——无损编码本身是 C 的 libwebp/zlib，换语言不会更快。
+- **PNG 改用 libdeflate**：同为 PNG 格式，比 zlib 快 2~3 倍。
+- **GPU 分支**：只有在引入 BC7/ASTC 这类 GPU 原生**有损**格式时才有意义。无损熵编码（Huffman/LZ）是串行依赖的，GPU 帮不上忙。
+
 ## 许可
 
 代码与文档采用 **GNU AGPL-3.0**，见 [LICENSE](LICENSE)。

@@ -21,6 +21,7 @@ MATERIALS = ["皮肤", "毛发", "服装", "金属饰品", "布料饰品", "眼�
 
 
 def main():
+    global SRC
     ap = argparse.ArgumentParser()
     ap.add_argument('--limit', type=int, default=3)
     ap.add_argument('--lossless', action='store_true')
@@ -29,7 +30,6 @@ def main():
     ap.add_argument('--threshold-max', type=int, default=None,
                     help='无损档默认要求 0；有损档不设硬门槛（仅报告）')
     a = ap.parse_args()
-    global SRC
     SRC = a.src
     out = a.out or (OUT if not a.lossless else OUT.replace('成品素材', '成品素材_无损'))
     prof = 'lossless' if a.lossless else 'compact'
