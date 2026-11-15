@@ -1,0 +1,193 @@
+{
+ "magic": "HJP1",
+ "version": [
+  1,
+  0
+ ],
+ "size": 2528,
+ "header_size": 864,
+ "canvas": [
+  8,
+  8
+ ],
+ "character": "golden",
+ "stage": 0,
+ "profile": "raw-conformance",
+ "blocks": [
+  {
+   "expr": 0,
+   "layer": 0,
+   "slot": 0,
+   "codec": "raw",
+   "channels": 3,
+   "scale_shift": 0,
+   "width": 8,
+   "height": 8,
+   "length": 192,
+   "sha256": "03c389049add01e6"
+  },
+  {
+   "expr": 0,
+   "layer": 1,
+   "slot": 0,
+   "codec": "raw",
+   "channels": 1,
+   "scale_shift": 0,
+   "width": 8,
+   "height": 8,
+   "length": 64,
+   "sha256": "d7374925990c5ba0"
+  },
+  {
+   "expr": 0,
+   "layer": 1,
+   "slot": 1,
+   "codec": "raw",
+   "channels": 1,
+   "scale_shift": 0,
+   "width": 8,
+   "height": 8,
+   "length": 64,
+   "sha256": "d7374925990c5ba0"
+  },
+  {
+   "expr": 0,
+   "layer": 2,
+   "slot": 0,
+   "codec": "raw",
+   "channels": 1,
+   "scale_shift": 0,
+   "width": 8,
+   "height": 8,
+   "length": 64,
+   "sha256": "5b312b59f5e9d03a"
+  },
+  {
+   "expr": 0,
+   "layer": 3,
+   "slot": 0,
+   "codec": "raw",
+   "channels": 4,
+   "scale_shift": 0,
+   "width": 8,
+   "height": 8,
+   "length": 256,
+   "sha256": "8316024f4e3560b8"
+  },
+  {
+   "expr": 0,
+   "layer": 3,
+   "slot": 1,
+   "codec": "raw",
+   "channels": 2,
+   "scale_shift": 0,
+   "width": 8,
+   "height": 8,
+   "length": 128,
+   "sha256": "85c2c7f6b3456bd3"
+  },
+  {
+   "expr": 0,
+   "layer": 4,
+   "slot": 0,
+   "codec": "raw",
+   "channels": 1,
+   "scale_shift": 0,
+   "width": 8,
+   "height": 8,
+   "length": 64,
+   "sha256": "8f8842fb88570aa9"
+  },
+  {
+   "expr": 1,
+   "layer": 0,
+   "slot": 0,
+   "codec": "raw",
+   "channels": 3,
+   "scale_shift": 0,
+   "width": 8,
+   "height": 8,
+   "length": 192,
+   "sha256": "9ae44d9a1e03104b"
+  },
+  {
+   "expr": 1,
+   "layer": 1,
+   "slot": 0,
+   "codec": "raw",
+   "channels": 1,
+   "scale_shift": 0,
+   "width": 8,
+   "height": 8,
+   "length": 64,
+   "sha256": "6a7f6532158ecda9"
+  },
+  {
+   "expr": 1,
+   "layer": 1,
+   "slot": 1,
+   "codec": "raw",
+   "channels": 1,
+   "scale_shift": 0,
+   "width": 8,
+   "height": 8,
+   "length": 64,
+   "sha256": "6a7f6532158ecda9"
+  },
+  {
+   "expr": 1,
+   "layer": 2,
+   "slot": 0,
+   "codec": "raw",
+   "channels": 1,
+   "scale_shift": 0,
+   "width": 8,
+   "height": 8,
+   "length": 64,
+   "sha256": "2280034b47b24321"
+  },
+  {
+   "expr": 1,
+   "layer": 3,
+   "slot": 0,
+   "codec": "raw",
+   "channels": 4,
+   "scale_shift": 0,
+   "width": 8,
+   "height": 8,
+   "length": 256,
+   "sha256": "1f6d66855115d72a"
+  },
+  {
+   "expr": 1,
+   "layer": 3,
+   "slot": 1,
+   "codec": "raw",
+   "channels": 2,
+   "scale_shift": 0,
+   "width": 8,
+   "height": 8,
+   "length": 128,
+   "sha256": "96a198d4792dc417"
+  },
+  {
+   "expr": 1,
+   "layer": 4,
+   "slot": 0,
+   "codec": "raw",
+   "channels": 1,
+   "scale_shift": 0,
+   "width": 8,
+   "height": 8,
+   "length": 64,
+   "sha256": "dac15dfb98e566b2"
+  }
+ ],
+ "chunks": [
+  "pari"
+ ],
+ "pari": {
+  "0": 1229801703532086340,
+  "1": 2459584641779389781
+ }
+}

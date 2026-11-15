@@ -1,0 +1,25 @@
+# 构建产物与素材（不入库）
+build/
+build_lossless/
+build_v2/
+*.zip
+__pycache__/
+*.pyc
+*.tmp
+
+# 内部交接与审查材料（不入库）
+HJP_项目手册.md
+HJP_优化实施交付手册_2026-11-15.md
+HJP_审核报告_2026-11-14.md
+HJP_v1.md
+构建结果.md
+handoff_2026-11-15/
+_analysis/
+audit_2026-11-14.py
+audit_2026-11-14_*.json
+audit_2026-11-14_mutation.txt
+verify.py
+
+# 本地生成
+expr_ids.snapshot.json
+smoke_real.py

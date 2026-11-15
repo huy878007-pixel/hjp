@@ -1,0 +1,23 @@
+{
+ "lossless": {
+  "all_max": 0
+ },
+ "compact": {
+  "color_mean": 2.0,
+  "color_max": 48,
+  "color_gt32_ppm": 100,
+  "normal_angle_mean": 1.0,
+  "normal_angle_p999": 8.0,
+  "normal_angle_max": 60.0,
+  "depth_mean": 1.0,
+  "depth_max": 24,
+  "mask_max": 0,
+  "alpha_max": 0,
+  "partition_mean": 1.5,
+  "partition_gt32_ppm": 100
+ },
+ "common": {
+  "require_samples": 1,
+  "require_pari_match": true
+ }
+}
