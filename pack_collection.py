@@ -63,7 +63,7 @@ def plan(cdir, exprs):
         md = os.path.join(cdir, '材质切分', e['stem'], '材质蒙版')
         for p in (cp, np_, dp):
             if not os.path.exists(p):
-                raise HjpBuildError(f"{e['stem']}: 缺少 {os.path.basename(p)}")
+                raise HjpBuildError(f"{e['stem']}: 缺少 {os.path.relpath(p, cdir)}")
         if not os.path.isdir(md):
             raise HjpBuildError(f"{e['stem']}: 缺少材质蒙版目录")
         missing = [m for m in MATERIALS if not os.path.exists(os.path.join(md, m + '.png'))]
